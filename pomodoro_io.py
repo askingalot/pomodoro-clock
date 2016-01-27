@@ -1,36 +1,41 @@
 import os
 import datetime as dt
 from pyfiglet import figlet_format
+from sys import stdin
+from select import select
+
+
+def did_press_enter_before_timeout(timeout):
+    buffers = select([stdin,],[],[],timeout)[0]
+    if buffers:
+        buffers[0].readline()
+        return True
+    else:
+        return False
 
 
 def clear_screen():
-    print(chr(27) + "[2J")
+    print("\x1b[2J\x1b[H")
 
 
-def print_large(msg, font='big'):
+def print_large(msg, font='starwars'):
     clear_screen()
     str_msg = str(msg)
     large_text = figlet_format(str_msg, font=font).center(80)
-    print( large_text + "\n\n\n\n\n" )
+    print( large_text )
 
 
 def beep():
-    print('\a\a\a')
+    print('\a\a')
 
 
 def say(message):
     os.system('say "' + message + '"')
 
 
-def say_take_a_break():
+def say_with_beeps(message):
     beep()
-    say("It's time to take a break")
-    beep()
-
-
-def say_back_to_work():
-    beep()
-    say("get back to work")
+    say(message)
     beep()
 
 
